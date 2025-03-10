@@ -1,48 +1,47 @@
-// Task 2 - Support Tickets Dynamic Addition
+// Task 2 - Dynamically Add Support Tickets
 function addSupportTicket(name, issue, priority) {
   const ticketContainer = document.getElementById('ticketContainer');
 
-  // Creation of ticket div
+  // Create the ticket div container
   const ticket = document.createElement('div');
   ticket.classList.add('ticket');
 
-  // Customer Name (Heading)
+  // Create and set the customer name heading
   const customerName = document.createElement('h2');
   customerName.textContent = name;
 
-  // Issue Description 
+  // Create and set the issue description paragraph
   const issueDescription = document.createElement('p');
   issueDescription.textContent = `Issue: ${issue}`;
 
-  // Priority Label for importance
+  // Create and set the priority level label
   const priorityLabel = document.createElement('span');
   priorityLabel.textContent = `Priority: ${priority}`;
   priorityLabel.classList.add('priority');
 
-  // Resolve Button for discrepancies
+  // Create the "Resolve" button for removing the ticket
   const resolveButton = document.createElement('button');
   resolveButton.textContent = 'Resolve';
   resolveButton.classList.add('resolve-btn');
   
-  // Event listener to remove ticket when resolve button is clicked
+  // Add event listener to remove the ticket when the "Resolve" button is clicked
   resolveButton.addEventListener('click', (event) => {
-    event.stopPropagation(); // Stop bubbling
+    event.stopPropagation(); // Prevent event bubbling
     ticketContainer.removeChild(ticket);
     console.log(`Ticket for ${name} resolved.`);
   });
 
-  // Add event listener for inline editing (Task 5)
+  // Add event listener to allow inline editing (Task 5)
   ticket.addEventListener('dblclick', () => editTicket(ticket, name, issue, priority));
 
-  // Append elements to ticket
+  // Append all elements to the ticket div
   ticket.appendChild(customerName);
   ticket.appendChild(issueDescription);
   ticket.appendChild(priorityLabel);
   ticket.appendChild(resolveButton);
 
-  // Add ticket to container
+  // Append the newly created ticket to the ticket container
   ticketContainer.appendChild(ticket);
-}
 
 // Task 3 - Highlighting High Priority Tickets
 function highlightHighPriorityTickets() {
@@ -57,97 +56,99 @@ ticketsArray.forEach((ticket) => {
 });
 }
 
-// Task 4 - Event Bubbling (Logging messages when ticket is clicked)
+// Task 4 - Handling Event Bubbling: Logging ticket details when clicked
 document.getElementById('ticketContainer').addEventListener('click', (event) => {
-if (event.target.classList.contains('ticket')) {
-  console.log(`Ticket clicked: ${event.target.querySelector('h2').textContent}`);
-}
+  // Check if the clicked element is a ticket
+  if (event.target.classList.contains('ticket')) {
+    const ticketName = event.target.querySelector('h2').textContent;
+    console.log(`Ticket Clicked: Customer - ${ticketName}`);
+  }
 });
 
-// Task 5 - Inline Editing of Support Tickets
+// Task 5 - Editing Support Tickets Inline: Allowing updates to ticket details
 function editTicket(ticket, name, issue, priority) {
-// Replace static text with input fields
-ticket.innerHTML = '';
+  // Clear current ticket content and replace with editable fields
+  ticket.innerHTML = '';
 
-// Name input
-const nameInput = document.createElement('input');
-nameInput.type = 'text';
-nameInput.value = name;
+  // Create input field for customer name
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.value = name; 
 
-// Issue input
-const issueInput = document.createElement('input');
-issueInput.type = 'text';
-issueInput.value = issue;
+  // Create input field for issue description
+  const issueInput = document.createElement('input');
+  issueInput.type = 'text';
+  issueInput.value = issue; 
 
-// Priority input
-const priorityInput = document.createElement('select');
-['High', 'Medium', 'Low'].forEach((level) => {
-  const option = document.createElement('option');
-  option.value = level;
-  option.textContent = level;
-  if (level === priority) option.selected = true;
-  priorityInput.appendChild(option);
-});
-
-// Save button
-const saveButton = document.createElement('button');
-saveButton.textContent = 'Save';
-saveButton.classList.add('save-btn');
-
-// Save event
-saveButton.addEventListener('click', () => {
-  // Update ticket with new values
-  const updatedName = nameInput.value;
-  const updatedIssue = issueInput.value;
-  const updatedPriority = priorityInput.value;
-
-  ticket.innerHTML = ''; // Clear existing content
-
-  // Add updated content back
-  const customerName = document.createElement('h2');
-  customerName.textContent = updatedName;
-
-  const issueDescription = document.createElement('p');
-  issueDescription.textContent = `Issue: ${updatedIssue}`;
-
-  const priorityLabel = document.createElement('span');
-  priorityLabel.textContent = `Priority: ${updatedPriority}`;
-  priorityLabel.classList.add('priority');
-
-  // Resolve button
-  const resolveButton = document.createElement('button');
-  resolveButton.textContent = 'Resolve';
-  resolveButton.classList.add('resolve-btn');
-  resolveButton.addEventListener('click', (event) => {
-    event.stopPropagation(); // Stop bubbling
-    ticket.parentElement.removeChild(ticket);
-    console.log(`Ticket for ${updatedName} resolved.`);
+  // Create a dropdown for priority level selection
+  const priorityInput = document.createElement('select');
+  ['High', 'Medium', 'Low'].forEach((level) => {
+    const option = document.createElement('option');
+    option.value = level;
+    option.textContent = level;
+    if (level === priority) option.selected = true; // Set the current priority as selected
+    priorityInput.appendChild(option);
   });
 
-  // Add editing feature to repeat
-  ticket.addEventListener('dblclick', () => editTicket(ticket, updatedName, updatedIssue, updatedPriority));
+  // Create a Save button to save the changes
+  const saveButton = document.createElement('button');
+  saveButton.textContent = 'Save';
+  saveButton.classList.add('save-btn'); // Add a class for styling
 
-  // Append updated elements
-  ticket.appendChild(customerName);
-  ticket.appendChild(issueDescription);
-  ticket.appendChild(priorityLabel);
-  ticket.appendChild(resolveButton);
+  // Event listener for the Save button to apply changes
+  saveButton.addEventListener('click', () => {
+    // Get the updated values from the inputs
+    const updatedName = nameInput.value;
+    const updatedIssue = issueInput.value;
+    const updatedPriority = priorityInput.value;
 
-  // Highlight high-priority tickets again
-  highlightHighPriorityTickets();
-});
+    ticket.innerHTML = ''; // Clear current content
 
-// Append input fields and button to ticket
-ticket.appendChild(nameInput);
-ticket.appendChild(issueInput);
-ticket.appendChild(priorityInput);
-ticket.appendChild(saveButton);
+    // Re-create and append updated content (customer name, issue, priority)
+    const customerName = document.createElement('h2');
+    customerName.textContent = updatedName;
+
+    const issueDescription = document.createElement('p');
+    issueDescription.textContent = `Issue: ${updatedIssue}`;
+
+    const priorityLabel = document.createElement('span');
+    priorityLabel.textContent = `Priority: ${updatedPriority}`;
+    priorityLabel.classList.add('priority'); // Add a class for priority styling
+
+    // Create a Resolve button for removing the ticket
+    const resolveButton = document.createElement('button');
+    resolveButton.textContent = 'Resolve';
+    resolveButton.classList.add('resolve-btn'); // Add a class for Resolve button styling
+    resolveButton.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent event from bubbling up
+      ticket.parentElement.removeChild(ticket); // Remove the ticket from the container
+      console.log(`Ticket for ${updatedName} has been resolved.`);
+    });
+
+    // Re-enable the double-click event for inline editing of the ticket
+    ticket.addEventListener('dblclick', () => editTicket(ticket, updatedName, updatedIssue, updatedPriority));
+
+    // Append the updated elements back to the ticket
+    ticket.appendChild(customerName);
+    ticket.appendChild(issueDescription);
+    ticket.appendChild(priorityLabel);
+    ticket.appendChild(resolveButton);
+
+    // Reapply highlighting to high-priority tickets (Task 3)
+    highlightHighPriorityTickets();
+  });
+
+  // Append input fields and Save button to allow for editing
+  ticket.appendChild(nameInput);
+  ticket.appendChild(issueInput);
+  ticket.appendChild(priorityInput);
+  ticket.appendChild(saveButton);
 }
 
-// Example test cases
+// Example test cases to add support tickets and highlight high-priority ones
 addSupportTicket('Johnny Mac', 'Unable to save and refresh', 'High');
 addSupportTicket('Adam Smith', 'Site running slow', 'Medium');
 addSupportTicket('Mark Pearson', 'Unable to refresh', 'High');
 
-// Highlight high-priority tickets
+// Highlight high-priority tickets in the dashboard
 highlightHighPriorityTickets();
