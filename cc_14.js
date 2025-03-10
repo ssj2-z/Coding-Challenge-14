@@ -43,3 +43,15 @@ function addSupportTicket(name, issue, priority) {
     // Add ticket to container
     ticketContainer.appendChild(ticket);
   }
+    // Task 3 - Highlighting High Priority Tickets
+    function highlightHighPriorityTickets() {
+      const highPriorityTickets = document.querySelectorAll('.priority');
+      const ticketsArray = Array.from(highPriorityTickets);
+    
+      ticketsArray.forEach((ticket) => {
+        if (ticket.textContent.includes('High')) {
+          ticket.parentElement.style.backgroundColor = '#ffcccc'; // Light red background
+          ticket.parentElement.style.border = '2px solid #e74c3c'; // Red border
+        }
+      });
+    }
