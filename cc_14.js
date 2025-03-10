@@ -61,3 +61,90 @@ function addSupportTicket(name, issue, priority) {
       console.log(`Ticket clicked: ${event.target.querySelector('h2').textContent}`);
     }
   });
+// Task 5 - Inline Editing of Support Tickets
+function editTicket(ticket, name, issue, priority) {
+  // Replace static text with input fields
+  ticket.innerHTML = '';
+
+  // Name input
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.value = name;
+
+  // Issue input
+  const issueInput = document.createElement('input');
+  issueInput.type = 'text';
+  issueInput.value = issue;
+
+  // Priority input
+  const priorityInput = document.createElement('select');
+  ['High', 'Medium', 'Low'].forEach((level) => {
+    const option = document.createElement('option');
+    option.value = level;
+    option.textContent = level;
+    if (level === priority) option.selected = true;
+    priorityInput.appendChild(option);
+  });
+
+  // Save button
+  const saveButton = document.createElement('button');
+  saveButton.textContent = 'Save';
+  saveButton.classList.add('save-btn');
+
+  // Save event
+  saveButton.addEventListener('click', () => {
+    // Update ticket with new values
+    const updatedName = nameInput.value;
+    const updatedIssue = issueInput.value;
+    const updatedPriority = priorityInput.value;
+
+    ticket.innerHTML = ''; // Clear existing content
+
+    // Add updated content back
+    const customerName = document.createElement('h2');
+    customerName.textContent = updatedName;
+
+    const issueDescription = document.createElement('p');
+    issueDescription.textContent = `Issue: ${updatedIssue}`;
+
+    const priorityLabel = document.createElement('span');
+    priorityLabel.textContent = `Priority: ${updatedPriority}`;
+    priorityLabel.classList.add('priority');
+
+    // Resolve button
+    const resolveButton = document.createElement('button');
+    resolveButton.textContent = 'Resolve';
+    resolveButton.classList.add('resolve-btn');
+    resolveButton.addEventListener('click', (event) => {
+      event.stopPropagation(); // Stop bubbling
+      ticket.parentElement.removeChild(ticket);
+      console.log(`Ticket for ${updatedName} resolved.`);
+    });
+
+    // Add editing feature to repeat
+    ticket.addEventListener('dblclick', () => editTicket(ticket, updatedName, updatedIssue, updatedPriority));
+
+    // Append updated elements
+    ticket.appendChild(customerName);
+    ticket.appendChild(issueDescription);
+    ticket.appendChild(priorityLabel);
+    ticket.appendChild(resolveButton);
+
+    // Highlight high-priority tickets again
+    highlightHighPriorityTickets();
+  });
+
+  // Append input fields and button to ticket
+  ticket.appendChild(nameInput);
+  ticket.appendChild(issueInput);
+  ticket.appendChild(priorityInput);
+  ticket.appendChild(saveButton);
+}
+
+// Example test cases
+addSupportTicket('Johnny Mac', 'Unable to save and refresh', 'High');
+addSupportTicket('Adam Smith', 'Site running slow', 'Medium');
+addSupportTicket('Mark Pearson', 'Unable to refresh', 'High');
+
+// Highlight high-priority tickets
+highlightHighPriorityTickets();
