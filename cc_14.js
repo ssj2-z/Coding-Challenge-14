@@ -55,3 +55,9 @@ function addSupportTicket(name, issue, priority) {
         }
       });
     }
+      // Task 4 - Event Bubbling (Logging messages when ticket is clicked)
+  document.getElementById('ticketContainer').addEventListener('click', (event) => {
+    if (event.target.classList.contains('ticket')) {
+      console.log(`Ticket clicked: ${event.target.querySelector('h2').textContent}`);
+    }
+  });
